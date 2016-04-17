@@ -1,21 +1,22 @@
 <?php
 require_once ( "config.php" );
 //start a user session - track weither the user logged in or not
-session_start()
+
+session_start();
 $action = isset( $GET['action'] ) ? $_GET['action'] : "";
 $username = isset ( $_SESSION['username'] ) ? $_SESSION['username'] : "";
 
 //inspect $username to see if the session contained a value for the username key, which we use to signify that the user is logged in. If $username's value is empty — and the user isn't already trying to log in or out — then we display the login page and exit immediately.
-if ( $action != "login" && $action != "logout" && !$username) {
-	login();
-	exit;
-}
+// if ( $action != "login" && $action != "logout" && !$username) {
+// 	login();
+// 	exit;
+// }
 
 //it calls the appropriate function based on the value of the action URL parameter. The default action is to display the list of resources in the CMS.
 switch ( $action ) {
-	case 'login':
-		login();
-		break;
+	// case 'login':
+	// 	login();
+	// 	break;
 	case 'logout':
 		logout();
 		break;
@@ -29,123 +30,142 @@ switch ( $action ) {
 		deleteResource();
 		break;
 	default:
-		listResources();
+		// listResources();
+		login();
 }
 
 function login() {
 	$results = array();
 	$results['pageTitle'] = "Admin Login | Couch To Code";
 
-	if ( isset( $_POST['login'] ) ) {
-		//user has posted the login form: aptempt to log the user in 
+	if(isset($_POST['login'])) {
+		//define username and associated password array
+		$logins = array('bri' => 'plant');
+		print_r($logins);
 
-		if ( $_POST['username'] == $ADMIN_USERNAME && $_POST['password'] == $ADMIN_PASSWORD ) {
-			//Login Sucessfull: create session and redirect to the admin homepage
-			//session key is set to the admin username
-			$_SESSION['username'] = $ADMIN_USERNAME;
-			header( "Location: admin.php" );
+
+		//check and assign submitted username and password to new variable
+		$username = isset($_POST['username']) ? $_POST['username'] : '';
+		$password = isset($_POST['password']) ? $_POST['password'] : '';
+		print_r($username);
+		print_r($password);
+
+
+		//check username and password existence in defined array
+		if (isset($logins[$username]) && $logins[$username] == $password) {
+
+			//success: set session variables and redirect to protected page
+			print_r("Your In");
+
+			$_SESSION['userdata']['username']=$logins['username'];
+			// header("Location:http://localhost/~brianna.vay/C2CGithub/admin.php/?action=login");
+			header("Location:http://localhost/~brianna.vay/C2CGithub/index.php");
+
 		} else {
-			//Login failed: display error message to user
+
+			//unsucessful attempy: set error message
 			$results['errorMessage'] = "NOPE!";
-			require ( TEMPLATE_PATH . "/admin/loginForm.php" );
+			require ( "templates/admin/loginForm.php" );
 		}
 	} else {
 		//user has not posted the login form yet: display the form
-		require ( TEMPLATE_PATH . "/admin/loginForm.php" );
-	}
-}
-
-function logout() {
-	//simply removes the username session key and redirects
-	unset( $_SESSION['username'] );
-	header( "Loaction: admin.php" );
-}
-
-function newResource() {
-	$results = array();
-	$results['pageTitle'] = "New Resource";
-	$results['formAction'] = "newResource";
-
-	if ( isset( $_POST['saveChanges'] ) ) {
-		//user has posted the article edit form: save the new article
-		$resource = new Resource;
-		$resource->storeFormValues( $_POST );
-		$resource->insert();
-		header( "Location: admin.php?status=changesSaved" );
-	} elseif ( isset( $_POST['cancel'] ) ) {
-		//User has cancelled their edits: return to the article list
-		header( "Loaction: admin.php" );
-	} else {
-		//If the user has not posted the "new article" form yet then the function creates a new empty Article object with no values, then uses the editArticle.php template to display the article edit form using this empty Article object.
-		//user has not posted the article edit form yet: display the form
-		$results['resource'] = new Resource
-		require( TEMPLATE_PATH . "/admin/editResource.php" );
+			require ( "templates/admin/loginForm.php" );
 	}
 }
 
 
-function editResource() {
- 
-  $results = array();
-  $results['pageTitle'] = "Edit Resource";
-  $results['formAction'] = "editArticle";
- 
-  if ( isset( $_POST['saveChanges'] ) ) {
- 
-    // User has posted the article edit form: save the article changes
- 
-    if ( !$resource = Resource::getById( (int)$_POST['resourceId'] ) ) {
-      header( "Location: admin.php?error=resourceNotFound" );
-      return;
-    }
- 
-    $resource->storeFormValues( $_POST );
-    $resource->update();
-    header( "Location: admin.php?status=changesSaved" );
- 
-  } elseif ( isset( $_POST['cancel'] ) ) {
- 
-    // User has cancelled their edits: return to the article list
-    header( "Location: admin.php" );
-  } else {
- 
-    // User has not posted the article edit form yet: display the form
-    $results['resource'] = Resource::getById( (int)$_GET['resourceId'] );
-    require( TEMPLATE_PATH . "/admin/editResource.php" );
-  }
- 
-}
 
-function deleteResource() {
+// function logout() {
+// 	//simply removes the username session key and redirects
+// 	unset( $_SESSION['username'] );
+// 	header( "Loaction: admin.php" );
+// }
+
+// function newResource() {
+// 	$results = array();
+// 	$results['pageTitle'] = "New Resource";
+// 	$results['formAction'] = "newResource";
+
+// 	if ( isset( $_POST['saveChanges'] ) ) {
+// 		//user has posted the article edit form: save the new article
+// 		$resource = new Resource;
+// 		$resource->storeFormValues( $_POST );
+// 		$resource->insert();
+// 		header( "Location: admin.php?status=changesSaved" );
+// 	} elseif ( isset( $_POST['cancel'] ) ) {
+// 		//User has cancelled their edits: return to the article list
+// 		header( "Loaction: admin.php" );
+// 	} else {
+// 		//If the user has not posted the "new article" form yet then the function creates a new empty Article object with no values, then uses the editArticle.php template to display the article edit form using this empty Article object.
+// 		//user has not posted the article edit form yet: display the form
+// 		$results['resource'] = new Resource
+// 		require( TEMPLATE_PATH . "/admin/editResource.php" );
+// 	}
+// }
+
+
+// function editResource() {
  
-  if ( !$resource = Resource::getById( (int)$_GET['resourceId'] ) ) {
-    header( "Location: admin.php?error=resourceNotFound" );
-    return;
-  }
+//   $results = array();
+//   $results['pageTitle'] = "Edit Resource";
+//   $results['formAction'] = "editArticle";
  
-  $resource->delete();
-  header( "Location: admin.php?status=resourceDeleted" );
-}
+//   if ( isset( $_POST['saveChanges'] ) ) {
+ 
+//     // User has posted the article edit form: save the article changes
+ 
+//     if ( !$resource = Resource::getById( (int)$_POST['resourceId'] ) ) {
+//       header( "Location: admin.php?error=resourceNotFound" );
+//       return;
+//     }
+ 
+//     $resource->storeFormValues( $_POST );
+//     $resource->update();
+//     header( "Location: admin.php?status=changesSaved" );
+ 
+//   } elseif ( isset( $_POST['cancel'] ) ) {
+ 
+//     // User has cancelled their edits: return to the article list
+//     header( "Location: admin.php" );
+//   } else {
+ 
+//     // User has not posted the article edit form yet: display the form
+//     $results['resource'] = Resource::getById( (int)$_GET['resourceId'] );
+//     require( TEMPLATE_PATH . "/admin/editResource.php" );
+//   }
+ 
+// }
+
+// function deleteResource() {
+ 
+//   if ( !$resource = Resource::getById( (int)$_GET['resourceId'] ) ) {
+//     header( "Location: admin.php?error=resourceNotFound" );
+//     return;
+//   }
+ 
+//   $resource->delete();
+//   header( "Location: admin.php?status=resourceDeleted" );
+// }
  
  
-function listResources() {
-  $results = array();
-  $data = Resource::getList();
-  $results['resources'] = $data['results'];
-  $results['totalRows'] = $data['totalRows'];
-  $results['pageTitle'] = "All Resources";
+// function listResources() {
+//   $results = array();
+//   $data = Resource::getList();
+//   $results['resources'] = $data['results'];
+//   $results['totalRows'] = $data['totalRows'];
+//   $results['pageTitle'] = "All Resources";
  
-  if ( isset( $_GET['error'] ) ) {
-    if ( $_GET['error'] == "resourceNotFound" ) $results['errorMessage'] = "Error: Resource not found.";
-  }
+//   if ( isset( $_GET['error'] ) ) {
+//     if ( $_GET['error'] == "resourceNotFound" ) $results['errorMessage'] = "Error: Resource not found.";
+//   }
  
-  if ( isset( $_GET['status'] ) ) {
-    if ( $_GET['status'] == "changesSaved" ) $results['statusMessage'] = "Your changes have been saved.";
-    if ( $_GET['status'] == "articleDeleted" ) $results['statusMessage'] = "Article deleted.";
-  }
+//   if ( isset( $_GET['status'] ) ) {
+//     if ( $_GET['status'] == "changesSaved" ) $results['statusMessage'] = "Your changes have been saved.";
+//     if ( $_GET['status'] == "articleDeleted" ) $results['statusMessage'] = "Article deleted.";
+//   }
  
-  require( TEMPLATE_PATH . "/admin/listResources.php" );
-}
+//   require( TEMPLATE_PATH . "/admin/listResources.php" );
+// }
  
 
 ?>

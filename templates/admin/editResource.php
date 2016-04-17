@@ -1,0 +1,48 @@
+<?php include "templates/includes/header.php" ?>
+ 
+      <div>
+        <h2>Widget News Admin</h2>
+        <p>You are logged in as <b><?php echo htmlspecialchars( $_SESSION['username']) ?></b>. <a href="admin.php?action=logout"?>Log out</a></p>
+      </div>
+ 
+      <h1><?php echo $results['pageTitle']?></h1>
+ 
+      <form action="admin.php?action=<?php echo $results['formAction']?>" method="post">
+        <input type="hidden" name="resourceId" value="<?php echo $results['resource']->id ?>"/>
+ 
+<?php if ( isset( $results['errorMessage'] ) ) { ?>
+        <div class="errorMessage"><?php echo $results['errorMessage'] ?></div>
+<?php } ?>
+ 
+        <ul>
+ 
+          <li>
+            <label for="title">Article Title</label>
+            <input type="text" name="title" id="title" placeholder="Name of the resource" required autofocus maxlength="255" value="<?php echo htmlspecialchars( $results['resource']->title )?>" />
+          </li>
+ 
+          <li>
+            <label for="summary">Article Summary</label>
+            <textarea name="summary" id="summary" placeholder="Brief description of the article" required maxlength="1000" style="height: 5em;"><?php echo htmlspecialchars( $results['resource']->summary )?></textarea>
+          </li>
+ 
+          <li>
+            <label for="content">Article Content</label>
+            <textarea name="content" id="content" placeholder="The HTML content of the article" required maxlength="100000" style="height: 30em;"><?php echo htmlspecialchars( $results['resource']->content )?></textarea>
+          </li>
+ 
+ 
+        </ul>
+ 
+        <div class="buttons">
+          <input type="submit" name="saveChanges" value="Save Changes" />
+          <input type="submit" formnovalidate name="cancel" value="Cancel" />
+        </div>
+ 
+      </form>
+ 
+<?php if ( $results['resource']->id ) { ?>
+      <p><a href="admin.php?action=deleteResource&amp;resourceId=<?php echo $results['resource']->id ?>" onclick="return confirm('Delete This Resource?')">Delete This Article</a></p>
+<?php } ?>
+ 
+<?php include "templates/includes/footer.php" ?>

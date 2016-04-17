@@ -37,7 +37,7 @@
                         <textarea name="message" id="feedbackm"class="form textarea" required="required" placeholder="Message"></textarea>
                     </div>
 
-                    <div class=col-md-12 col-xs-12>
+                    <div class="col-md-12 col-xs-12">
                         <button type="submit" id="submit" name="submit" value="insert record" class="send-button">Send Message</button>
                     </div>
                 </form>
