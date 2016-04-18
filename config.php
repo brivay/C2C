@@ -13,6 +13,9 @@ $DB_PASSWORD = "Genesee1!";
 // $TEMPLATE_PATH = "templates";     //where script should look for HTML template files
 $ADMIN_USERNAME = "briannaevay@gmail.com";
 $ADMIN_PASSWORD = "Genesee1!";
+
+$logins = array('bri' => 'plant');
+
  
 require_once ( "classes/Resource.php" );
 
