@@ -4,14 +4,9 @@ require_once ( "config.php" );
 session_start();
 
 $action = ( $_GET['action'] );
-// var_dump($action);
-// print_r($_SERVER["QUERY_STRING"]);
-// $action = ($_SERVER["QUERY_STRING"]);
 var_dump($action);
 
 $username = isset ( $_SESSION['username'] ) ? $_SESSION['username'] : "";
-// var_dump($username);
-
 
 //inspect $username to see if the session contained a value for the username key, which we use to signify that the user is logged in. If $username's value is empty — and the user isn't already trying to log in or out — then we display the login page and exit immediately.
 if ( $action != "login" && $action != "logout" && !$username) {
@@ -39,7 +34,6 @@ switch ( $action ) {
 		break;
 	default:
 		listResources();
-		// newResource();
 }
 
 function login() {
@@ -51,49 +45,34 @@ function login() {
 		//check and assign submitted username and password to new variable
 		$username = isset($_POST['username']) ? $_POST['username'] : '';
 		$password = isset($_POST['password']) ? $_POST['password'] : '';
-		// print_r($username);
-		// print_r($password);
-
 
 		//check username and password existence in defined array
 		if (isset($logins[$username]) && $logins[$username] == $password) {
-
 			//success: set session variables and redirect to protected page
-			print_r("Your In");
-
 			$_SESSION['username']=key($logins);
-
-			header("Location: http://localhost/~brianna.vay/C2CGithub/admin.php?action=newResource");
-    		// header('Location:'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING']);
-
+			header("Location: admin.php");
 		} else {
-
 			//unsucessful attempt: set error message
 			$results['errorMessage'] = "NOPE!";
 			require ( "templates/admin/loginForm.php" );
 		}
 	} else {
 		//user has not posted the login form yet: display the form
-			print_r("Last Else");
-			require ( "templates/admin/loginForm.php" );
+		require ( "templates/admin/loginForm.php" );
 	}
 }
 
 
 
 function logout() {
- 	// simply removes the username session key and redirects
  	unset( $_SESSION['username'] );
-	header( "Loaction: admin.php" );
-	header("Location: http://localhost/~brianna.vay/C2CGithub/admin.php?action=login");
-
+	header( "Location: admin.php?action=login" );
 }
 
 
 function listResources() {
   	$results = array();
   	$data = Resource::getList();
-
   	$results['resources'] = $data;
   	$results['pageTitle'] = "Admin | All Resources";
  
@@ -110,8 +89,6 @@ function listResources() {
 }
 
 
-
-
 function newResource() {
 	$results = array();
 	$results['pageTitle'] = "Admin | New Resource";
@@ -119,20 +96,17 @@ function newResource() {
 
 	if ( isset( $_POST['saveChanges'] ) ) {
 		//user has posted the article edit form: save the new article
-		// print_r("form posted");
 		// print_r($_POST);
 		$resource = new Resource( $_POST );
 		// $resource->storeFormValues( $_POST );
 		$resource->insert();
-		// Print_r($resource);
 		header( "Location: admin.php?status=changesSaved" );
 	} elseif ( isset( $_POST['cancel'] ) ) {
 		//User has cancelled their edits: return to the article list
-		header( "Location: http://localhost/~brianna.vay/C2CGithub/admin.php?action=login" );
+		header( "Location: admin.php?action=login" );
 	} else {
 		//If the user has not posted the "new article" form yet then the function creates a new empty Article object with no values, then uses the editArticle.php template to display the article edit form using this empty Article object.
 		//user has not posted the article edit form yet: display the form
-		print_r('Form not posted yet!');
 		$results['resource'] = new Resource('');
 		require( "templates/admin/editResource.php" );
 	}

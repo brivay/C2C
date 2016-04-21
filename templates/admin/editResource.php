@@ -17,7 +17,7 @@
         </div>
       </div>
  
-      <form action="admin.php?<?php echo $results['formAction']?>" method="post" class="about-text">
+      <form action="admin.php?action=<?php echo $results['formAction']?>" method="post" class="about-text">
         <!-- <input type="hidden" name="id" value="<?php echo $results['resource']->id ?>"/> -->
  
 <?php if ( isset( $results['errorMessage'] ) ) { ?>

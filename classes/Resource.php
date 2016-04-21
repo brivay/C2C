@@ -142,8 +142,8 @@ class Resource {
 // }
 
 
-  	//inserts the current Resource object into the DB and sets it ID property
-  	//adds a new article record to the articles table, using the values stored in the current Article object
+//inserts the current Resource object into the DB and sets it ID property
+//adds a new article record to the articles table, using the values stored in the current Article object
 public function insert() {
   global $DB_HOST;
   global $DB_NAME;
@@ -165,14 +165,7 @@ public function insert() {
   $st->bind_param( 'sssssiiiis', $this->title, $this->url, $this->summary, $this->content, $this->category, $this->is_free, $this->is_featured, $this->position, $this->is_favorite, date("Y-m-d") );
   $st->execute();
   // $this->id = $conn->insert_id;
-      // $this->id = $conn->lastInsertId(); PDO
-      // $conn = null;
-
-  // $sql = "INSERT INTO `resources` (`id`, `title`, `url`, `summary`, `content`, `category`, `is_free`, `is_featured`, `position`, `is_favorite`, `date_created`) VALUES (NULL, 'hip', 'hip', 'hip', 'hip', 'else', '1', '1', '5', '0', '2016-04-21');";
-  // $conn->query($sql);
-  //     $this->id = $conn->insert_id;
-  //     // $this->id = $conn->lastInsertId(); PDO
-  //     // $conn = null;
+  // $conn = null;
 }
 
 
