@@ -77,23 +77,42 @@ class Resource {
     }
   }
 
+  public static function getList() {
+    global $DB_HOST;
+    global $DB_NAME;
+    global $DB_USERNAME;
+    global $DB_PASSWORD;
 
+    $conn = new mysqli( $DB_HOST, $DB_USERNAME, $DB_PASSWORD, $DB_NAME );
+    if (mysqli_connect_errno()) {
+      printf("Connection to the database failed: %s/n", $mysqli -> connect_error);
+      exit();
+    }
 
+    $sql = "SELECT * FROM resources ORDER BY id DESC;";
+    if ($st = $conn->prepare( $sql )) {
+        // $st->bind_param( "s", $type );
+        $st->execute();
+        $list = array();
+        $meta = $st->result_metadata(); 
+        while ($field = $meta->fetch_field()) { 
+          $params[] = &$row[$field->name]; 
+        } 
+        call_user_func_array(array($st, 'bind_result'), $params);            
+        while ($st->fetch()) { 
+          $resource = new Resource( $row );
+          $list[] = $resource;
+        } 
 
+        $conn = null;
+        // print_r($list);
 
+        return $list;
 
-
-
-
-
-
-
-
-
-
-
-
-
+    } else {
+        printf("Errormessage: %s\n", $conn->error);
+    }
+  }
 
 
 
@@ -111,34 +130,52 @@ class Resource {
     //returns a resource object matching the given id
     //conencts, retrievs the matching resource record and stores it in a new resource object
     //to enable the method to be called w/o needing an object, add static keyword - this allows the method to be called directly without specifiying on object (typically you call a method on an object - but this method returns a new object...)
-public static function getById ( $id ) {
-    $conn = new mysqli( $DB_HOST, $DB_USERNAME, $DB_PASSWORD, $DB_NAME );
-    $sql = "SELECT * FROM resources WHERE id = ?"; //:id is a placeholder. secure.
-    $st = $conn->prepare( $sql );
-    $st->bind_param( 'i', $id );
-    $st->execute();
-    $row = $st->fetch();
-    $conn = null;
-    if ( $row ) return new Resource( $row );
-}
+// public static function getById ( $id ) {
+//     $conn = new mysqli( $DB_HOST, $DB_USERNAME, $DB_PASSWORD, $DB_NAME );
+//     $sql = "SELECT * FROM resources WHERE id = ?"; //:id is a placeholder. secure.
+//     $st = $conn->prepare( $sql );
+//     $st->bind_param( 'i', $id );
+//     $st->execute();
+//     $row = $st->fetch();
+//     $conn = null;
+//     if ( $row ) return new Resource( $row );
+// }
 
 
   	//inserts the current Resource object into the DB and sets it ID property
   	//adds a new article record to the articles table, using the values stored in the current Article object
 public function insert() {
-  		// Does the Article object already have an ID?
- if ( !is_null( $this->id ) ) trigger_error ( "Resource::insert(): Attempt to insert an Resource object that already has its ID property set (to $this->id).", E_USER_ERROR );
+  global $DB_HOST;
+  global $DB_NAME;
+  global $DB_USERNAME;
+  global $DB_PASSWORD;
+  
+  // Does the Article object already have an ID?
+  if ( !is_null( $this->id ) ) trigger_error ( "Resource::insert(): Attempt to insert an Resource object that already has its ID property set (to $this->id).", E_USER_ERROR );
 
-    	// Insert the Resource
- $conn = new mysqli( $DB_HOST, $DB_USERNAME, $DB_PASSWORD, $DB_NAME );
- $sql = "INSERT INTO resources ( title, summary, url, content, category, is_free, is_featured, is_favorite, date_created ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
- $st = $conn->prepare ( $sql );
- $st->bind_param( 'sssssiiis', $this->title, $this->summary, $this->url, $this->content, $this->category, $this->is_free, $this->is_featured, $this->is_favorite, date("Y-m-d H:i:s") );
- $st->execute();
-	    // $this->id = $conn->lastInsertId(); PDO
- $this->id = $conn->insert_id;
- $conn = null;
+  // Insert the Resource
+  $conn = new mysqli( $DB_HOST, $DB_USERNAME, $DB_PASSWORD, $DB_NAME );
+  if (mysqli_connect_errno()) {
+      printf("Connection to the database failed: %s/n", $mysqli -> connect_error);
+      exit();
+  } 
+
+  $sql = "INSERT INTO resources ( title, url, summary, content, category, is_free, is_featured, position, is_favorite, date_created ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+  $st = $conn->prepare ( $sql );
+  $st->bind_param( 'sssssiiiis', $this->title, $this->url, $this->summary, $this->content, $this->category, $this->is_free, $this->is_featured, $this->position, $this->is_favorite, date("Y-m-d") );
+  $st->execute();
+  // $this->id = $conn->insert_id;
+      // $this->id = $conn->lastInsertId(); PDO
+      // $conn = null;
+
+  // $sql = "INSERT INTO `resources` (`id`, `title`, `url`, `summary`, `content`, `category`, `is_free`, `is_featured`, `position`, `is_favorite`, `date_created`) VALUES (NULL, 'hip', 'hip', 'hip', 'hip', 'else', '1', '1', '5', '0', '2016-04-21');";
+  // $conn->query($sql);
+  //     $this->id = $conn->insert_id;
+  //     // $this->id = $conn->lastInsertId(); PDO
+  //     // $conn = null;
 }
+
+
 
   	//updates teh current recource in the DB
 public function update() {
