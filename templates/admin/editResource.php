@@ -18,13 +18,11 @@
       </div>
  
       <form action="admin.php?action=<?php echo $results['formAction']?>" method="post" class="about-text">
-        <!-- <input type="hidden" name="id" value="<?php echo $results['resource']->id ?>"/> -->
  
 <?php if ( isset( $results['errorMessage'] ) ) { ?>
         <div class="errorMessage"><?php echo $results['errorMessage'] ?></div>
 <?php } ?>
  
- <!-- THIS IS WHERE I LEFT OFF -->
         <div class="row>
           <div class="col-xs-12">
             <label for="title">Title: </label>
@@ -53,57 +51,61 @@
           </div>
         </div>
 
-        <!-- CAN I CHANGE THIS TO A DROPDOWN? -->
+
         <div class="row">
           <div class="col-xs-12">
             <label for="category">Category: </label>
-            <input type="text" name="category"  id="category" placeholder="Category (Learn, Practice, Else)" class="admin-form" required autofocus style=" width:30em;" value="<?php echo htmlspecialchars( $results['resource']->category )?>" />
+            <select name="category"  id="category" class="admin-form" required autofocus style=" width:15em;" value="<?php echo htmlspecialchars( $results['resource']->category )?>"/>
+              <option value='learn'>learn</option>
+              <option value='practice'>practice</option>
+              <option value='else'>else</option>
+              <!-- CHECK TO MAKE SURE THE SELECT IS POPULATED WITH THE SQL VALUE WHEN EDITING -->
+            </select>
           </div>
         </div>
 
-        <!-- CAN I CHANGE THIS TO A CHECKBOX? -->
+
         <div class="row">
           <div class="col-xs-12">
             <label for="is_free">is_free?: </label>
-            <input type="number" name="is_free"  id="is_free"  placeholder="0=no, 1=yes" max="1" min="0" class="admin-form" required autofocus style=" width:15em;" value="<?php echo htmlspecialchars( $results['resource']->is_free )?>" />
+
+            <!-- CHECK TO MAKE SURE THE RADIO BUTTON IS POPULATED WITH THE SQL VALUE WHEN EDITING -->
+
+            <input type="radio" name="is_free" id="freeyes" required value="1" <?php if (($results['resource']->is_free) == 1) { echo 'checked';} ?> /> Yes
+            <input type="radio" name="is_free" id="freeno"  required value="0" <?php if (($results['resource']->is_free) == 0) { echo 'checked';} ?> /> No
           </div>
         </div>
 
         <div class="row">
           <div class="col-xs-12">
-            <label for="is_featured">is_featured?: </label>
-            <input type="number" name="is_featured"  id="is_featured"  placeholder="0=no, 1=yes" max="1" min="0" class="admin-form" required autofocus style=" width:15em;" value="<?php echo htmlspecialchars( $results['resource']->is_featured )?>" />
+            <label for="is_featured"> is_featured?: </label>
 
+            <!-- CHECK TO MAKE SURE THE RADIO BUTTON IS POPULATED WITH THE SQL VALUE WHEN EDITING -->
+
+            <input type="radio" name="is_featured" id="featuredyes" required value="1" <?php if (($results['resource']->is_featured) == 1) { echo 'checked';} ?> /> Yes
+            <input type="radio" name="is_featured" id="featuredno"  required value="0" <?php if (($results['resource']->is_featured) == 0) { echo 'checked';} ?> /> No
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12">
             <label for="position">position: </label>
             <input type="number" name="position"  id="position"  placeholder="position" min="0" class="admin-form" required autofocus style=" width:15em;" value="<?php echo htmlspecialchars( $results['resource']->position )?>" />
           </div>
         </div>
 
-        <!-- <div class="row ">
-          <div class="col-xs-12">
-            <label for="is_favorite">is_favorite?: </label>
-            <input type="number" name="is_favorite"  id="is_favorite"  placeholder="0=no, 1=yes" max="1" min="0" class="admin-form" required autofocus style=" width:15em;" value="<?php echo htmlspecialchars( $results['resource']->is_favorite )?>" />
-          </div>
-        </div> -->
 
         <div class="row">
-          <div class="col-xs-12">
+          <div class="col-xs-12 lastRadio">
             <label for="is_favorite"> is_favorite?: </label>
 
-    
             <!-- CHECK TO MAKE SURE THE RADIO BUTTON IS POPULATED WITH THE SQL VALUE WHEN EDITING -->
 
             <input type="radio" name="is_favorite" id="favoriteyes" required value="1" <?php if (($results['resource']->is_favorite) == 1) { echo 'checked';} ?> /> Yes
             <input type="radio" name="is_favorite" id="favoriteno"  required value="0" <?php if (($results['resource']->is_favorite) == 0) { echo 'checked';} ?> /> No
-
-            <?php echo ($results['resource']->is_favorite == '1')?'checked':''?>
             
           </div>
         </div>
-
-
-
-
 
 
 

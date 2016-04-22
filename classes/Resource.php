@@ -15,6 +15,7 @@ class Resource {
 	public $category = null;
 	public $is_free = null; //????
 	public $is_featured = null;
+  public $position = null;
 	public $is_favorite = null;
 	public $date_created = null;
 	
@@ -33,6 +34,7 @@ class Resource {
 		if ( isset ( $data['category'] ) ) $this->category = $data['category'];
 		if ( isset ( $data['is_free'] ) ) $this->is_free = (int) $data['is_free'];
 		if ( isset ( $data['is_featured'] ) ) $this->is_featured = (int) $data['is_featured'];
+    if ( isset ( $data['position'] ) ) $this->position = (int) $data['position'];
 		if ( isset ( $data['is_favorite'] ) ) $this->is_favorite = (int) $data['is_favorite'];
 		// if ( isset ( $data['date_created'] ) ) $this->date_created = (int) $data['date_created'];
 		if ( isset ( $data['date_created'] ) ) $this->date_created = date("Y-m-d H:i:s");
@@ -88,6 +90,7 @@ class Resource {
       printf("Connection to the database failed: %s/n", $mysqli -> connect_error);
       exit();
     }
+
 
     $sql = "SELECT * FROM resources ORDER BY id DESC;";
     if ($st = $conn->prepare( $sql )) {

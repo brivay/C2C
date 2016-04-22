@@ -36,20 +36,22 @@
     <tr>
       <th>id</th>
       <th>title</th>
+      <th>summary</th>
       <th>url</th>
       <th>category</th>
       <th>is_featured</th>
-      <th>date_created</th>
+      <th>position</th>
     </tr>
 
     <?php foreach ( $results['resources'] as $resource ) { ?>
       <tr onclick="location='admin.php?action=editResource&amp; resourceId=<?php echo $resource->id?>'">
         <td> <?php echo $resource->id ?> </td>
+        <td> <?php echo $resource->summary ?> </td>
         <td> <?php echo $resource->title ?> </td>
         <td> <?php echo $resource->url ?> </td>
         <td> <?php echo $resource->category ?> </td>
         <td> <?php echo $resource->is_featured ?> </td>
-        <td> <?php echo $resource->date_created ?> </td>
+        <td> <?php echo $resource->position ?> </td>
       </tr>
     <?php } ?>
 

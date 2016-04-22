@@ -4,13 +4,13 @@ require_once ( "config.php" );
 session_start();
 
 $action = ( $_GET['action'] );
-var_dump($action);
+// var_dump($action);
 
 $username = isset ( $_SESSION['username'] ) ? $_SESSION['username'] : "";
 
 //inspect $username to see if the session contained a value for the username key, which we use to signify that the user is logged in. If $username's value is empty — and the user isn't already trying to log in or out — then we display the login page and exit immediately.
 if ( $action != "login" && $action != "logout" && !$username) {
-	// print_r("not log in/log out, no session username");
+	print_r("not log in/log out, no session username");
 	login();
 	exit;
 }
@@ -96,9 +96,10 @@ function newResource() {
 
 	if ( isset( $_POST['saveChanges'] ) ) {
 		//user has posted the article edit form: save the new article
-		// print_r($_POST);
+		print_r($_POST);
 		$resource = new Resource( $_POST );
 		// $resource->storeFormValues( $_POST );
+		print_r($resource);
 		$resource->insert();
 		header( "Location: admin.php?status=changesSaved" );
 	} elseif ( isset( $_POST['cancel'] ) ) {
@@ -107,6 +108,7 @@ function newResource() {
 	} else {
 		//If the user has not posted the "new article" form yet then the function creates a new empty Article object with no values, then uses the editArticle.php template to display the article edit form using this empty Article object.
 		//user has not posted the article edit form yet: display the form
+		print_r("no post yet");
 		$results['resource'] = new Resource('');
 		require( "templates/admin/editResource.php" );
 	}
